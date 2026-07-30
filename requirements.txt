@@ -1,8 +1,7 @@
 Flask
-flask-mysqldb
+Flask-MySQLdb
 Flask-Login
-flask-cors
+Flask-Cors
 python-dotenv
-Werkzeug
-pymysql
+PyMySQL
 gunicorn
