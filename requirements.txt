@@ -1,5 +1,4 @@
 Flask
-Flask-MySQLdb
 Flask-Login
 Flask-Cors
 python-dotenv
