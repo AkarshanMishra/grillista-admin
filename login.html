@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Admin Login - Grillista{% endblock %}
+{% block login_content %}
+<div class="login-page">
+    <div class="login-card">
+        <div class="login-header">
+            <div class="login-logo">🍔</div>
+            <h1>Grillista Admin</h1>
+            <p>Enter your credentials to access the dashboard</p>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <form method="POST" action="{{ url_for('login') }}" class="login-form">
+            <div class="form-group">
+                <label for="username"><i class="fas fa-user"></i> Username</label>
+                <input type="text" id="username" name="username" required placeholder="Enter username">
+            </div>
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Password</label>
+                <input type="password" id="password" name="password" required placeholder="Enter password">
+            </div>
+            <button type="submit" class="btn btn-primary btn-block">
+                <i class="fas fa-right-to-bracket"></i> Login
+            </button>
+        </form>
+        <div class="login-footer">
+            <p>Default: admin / admin123</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

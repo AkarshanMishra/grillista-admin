@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+{% block title %}Gallery Management - Grillista Admin{% endblock %}
+{% block heading %}Gallery Management{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fas fa-upload"></i> Upload New Image</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('gallery_upload') }}" enctype="multipart/form-data" class="upload-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="title">Image Title</label>
+                    <input type="text" id="title" name="title" placeholder="e.g. Classic Veg Burger" required>
+                </div>
+                <div class="form-group">
+                    <label for="image">Select Image</label>
+                    <input type="file" id="image" name="image" accept="image/*" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-cloud-arrow-up"></i> Upload
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fas fa-images"></i> Gallery Images ({{ images|length }})</h2>
+    </div>
+    <div class="card-body">
+        {% if images %}
+        <div class="gallery-grid-admin" id="galleryGrid">
+            {% for image in images %}
+            <div class="gallery-item-admin" data-id="{{ image.id }}">
+                <img src="{{ url_for('static', filename=image.image_path) }}" alt="{{ image.title }}">
+                <div class="gallery-item-overlay">
+                    <span class="gallery-title">{{ image.title }}</span>
+                    <div class="gallery-actions">
+                        <a href="{{ url_for('gallery_delete', id=image.id) }}" 
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Delete this image?')">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <p class="text-muted">No images in gallery yet. Upload some above!</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

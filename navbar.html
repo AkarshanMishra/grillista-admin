@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% block title %}Navbar Links - Grillista Admin{% endblock %}
+{% block heading %}Navbar Links Management{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fas fa-plus-circle"></i> Add New Link</h2>
+    </div>
+    <div class="card-body">
+        <form method="POST" action="{{ url_for('add_navbar_link') }}">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="label">Link Label</label>
+                    <input type="text" id="label" name="label" placeholder="e.g. Home" required>
+                </div>
+                <div class="form-group">
+                    <label for="href">Link URL</label>
+                    <input type="text" id="href" name="href" placeholder="e.g. #home or /page.html" required>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Link
+            </button>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fas fa-bars"></i> Current Navbar Links</h2>
+        <p class="text-muted">Drag to reorder (coming soon). Use Active/Inactive to show/hide links.</p>
+    </div>
+    <div class="card-body">
+        {% if links %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Order</th>
+                        <th>Label</th>
+                        <th>URL</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for link in links %}
+                    <tr>
+                        <td><span class="badge">{{ link.sort_order }}</span></td>
+                        <td><strong>{{ link.label }}</strong></td>
+                        <td><code>{{ link.href }}</code></td>
+                        <td>
+                            <span class="status-badge {% if link.is_active %}status-active{% else %}status-inactive{% endif %}">
+                                {{ 'Active' if link.is_active else 'Inactive' }}
+                            </span>
+                        </td>
+                        <td>
+                            <div class="action-btns">
+                                <button class="btn btn-sm" onclick="toggleEditLink({{ link.id }})">
+                                    <i class="fas fa-pen"></i>
+                                </button>
+                                <a href="{{ url_for('delete_navbar_link', id=link.id) }}" 
+                                   class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Delete this link?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr id="editRow{{ link.id }}" style="display:none;">
+                        <td colspan="5">
+                            <form method="POST" action="{{ url_for('edit_navbar_link', id=link.id) }}" class="inline-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <input type="text" name="label" value="{{ link.label }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" name="href" value="{{ link.href }}" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>
+                                            <input type="checkbox" name="is_active" {% if link.is_active %}checked{% endif %}>
+                                            Active
+                                        </label>
+                                    </div>
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-primary btn-sm">Save</button>
+                                        <button type="button" class="btn btn-sm" onclick="toggleEditLink({{ link.id }})">Cancel</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted">No navbar links configured.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
+{% block extra_js %}
+<script>
+function toggleEditLink(id) {
+    const row = document.getElementById('editRow' + id);
+    row.style.display = row.style.display === 'none' ? 'table-row' : 'none';
+}
+</script>
+{% endblock %}

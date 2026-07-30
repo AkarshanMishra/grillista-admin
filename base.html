@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Grillista Admin{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    {% if session.admin_logged_in %}
+    <div class="admin-layout">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>🍔 Grillista</h2>
+                <p>Admin Panel</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="{{ url_for('dashboard') }}" class="{% if request.endpoint == 'dashboard' %}active{% endif %}">
+                    <i class="fas fa-chart-simple"></i> Dashboard
+                </a>
+                <a href="{{ url_for('gallery') }}" class="{% if request.endpoint == 'gallery' %}active{% endif %}">
+                    <i class="fas fa-images"></i> Gallery
+                </a>
+                <a href="{{ url_for('inquiries') }}" class="{% if request.endpoint == 'inquiries' %}active{% endif %}">
+                    <i class="fas fa-message"></i> Inquiries
+                </a>
+                <a href="{{ url_for('testimonials') }}" class="{% if request.endpoint == 'testimonials' %}active{% endif %}">
+                    <i class="fas fa-quote-right"></i> Testimonials
+                </a>
+                <a href="{{ url_for('navbar') }}" class="{% if request.endpoint == 'navbar' %}active{% endif %}">
+                    <i class="fas fa-bars"></i> Navbar Links
+                </a>
+                <a href="{{ url_for('site_content') }}" class="{% if request.endpoint == 'site_content' %}active{% endif %}">
+                    <i class="fas fa-pen-to-square"></i> Site Content
+                </a>
+                <hr>
+                <a href="{{ url_for('change_password') }}" class="{% if request.endpoint == 'change_password' %}active{% endif %}">
+                    <i class="fas fa-key"></i> Change Password
+                </a>
+                <a href="{{ url_for('logout') }}" onclick="return confirm('Logout?')">
+                    <i class="fas fa-right-from-bracket"></i> Logout
+                </a>
+            </nav>
+        </aside>
+        <main class="main-content">
+            <header class="content-header">
+                <h1>{% block heading %}Dashboard{% endblock %}</h1>
+                <div class="header-user">
+                    <i class="fas fa-user-circle"></i>
+                    <span>{{ session.admin_username }}</span>
+                </div>
+            </header>
+            <div class="content-body">
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+    {% else %}
+        {% block login_content %}{% endblock %}
+    {% endif %}
+    
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

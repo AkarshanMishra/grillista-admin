@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+{% block title %}Dashboard - Grillista Admin{% endblock %}
+{% block heading %}Dashboard Overview{% endblock %}
+{% block content %}
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #e3f2fd; color: #1976d2;">
+            <i class="fas fa-message"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ total_inquiries }}</h3>
+            <p>Total Inquiries</p>
+        </div>
+        <span class="stat-badge badge-new">{{ new_inquiries }} new</span>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fce4ec; color: #c62828;">
+            <i class="fas fa-images"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ total_gallery }}</h3>
+            <p>Gallery Images</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #e8f5e9; color: #2e7d32;">
+            <i class="fas fa-quote-right"></i>
+        </div>
+        <div class="stat-info">
+            <h3>{{ active_testimonials }}</h3>
+            <p>Active Testimonials</p>
+        </div>
+    </div>
+    <div class="stat-card">
+        <div class="stat-icon" style="background: #fff3e0; color: #e65100;">
+            <i class="fas fa-link"></i>
+        </div>
+        <div class="stat-info">
+            <h3>6</h3>
+            <p>Navbar Links</p>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fas fa-clock-rotate"></i> Recent Inquiries</h2>
+        <a href="{{ url_for('inquiries') }}" class="btn btn-sm">View All</a>
+    </div>
+    <div class="card-body">
+        {% if recent_inquiries %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>City</th>
+                        <th>Budget</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inquiry in recent_inquiries %}
+                    <tr>
+                        <td><strong>{{ inquiry.name }}</strong></td>
+                        <td>{{ inquiry.mobile }}</td>
+                        <td>{{ inquiry.city }}</td>
+                        <td>{{ inquiry.budget }}</td>
+                        <td>
+                            <span class="status-badge status-{{ inquiry.status }}">
+                                {{ inquiry.status }}
+                            </span>
+                        </td>
+                        <td>{{ inquiry.created_at.strftime('%d %b %Y') }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted">No inquiries yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fas fa-circle-info"></i> Quick Actions</h2>
+    </div>
+    <div class="card-body">
+        <div class="quick-actions">
+            <a href="{{ url_for('gallery') }}" class="action-btn">
+                <i class="fas fa-upload"></i>
+                <span>Upload Gallery Images</span>
+            </a>
+            <a href="{{ url_for('testimonials') }}" class="action-btn">
+                <i class="fas fa-plus"></i>
+                <span>Add Testimonial</span>
+            </a>
+            <a href="{{ url_for('navbar') }}" class="action-btn">
+                <i class="fas fa-pen"></i>
+                <span>Edit Navbar Links</span>
+            </a>
+            <a href="{{ url_for('site_content') }}" class="action-btn">
+                <i class="fas fa-pencil"></i>
+                <span>Update Site Content</span>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

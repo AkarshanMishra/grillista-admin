@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}Inquiries - Grillista Admin{% endblock %}
+{% block heading %}Franchise Inquiries{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h2><i class="fas fa-message"></i> All Inquiries ({{ inquiries|length }})</h2>
+        <div class="header-actions">
+            <span class="badge badge-new">{{ inquiries|selectattr('status', 'equalto', 'new')|list|length }} New</span>
+        </div>
+    </div>
+    <div class="card-body">
+        {% if inquiries %}
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Name</th>
+                        <th>Mobile</th>
+                        <th>Email</th>
+                        <th>City</th>
+                        <th>Budget</th>
+                        <th>Message</th>
+                        <th>Status</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inquiry in inquiries %}
+                    <tr class="{% if inquiry.status == 'new' %}row-new{% endif %}">
+                        <td>{{ inquiry.id }}</td>
+                        <td><strong>{{ inquiry.name }}</strong></td>
+                        <td><a href="tel:{{ inquiry.mobile }}">{{ inquiry.mobile }}</a></td>
+                        <td><a href="mailto:{{ inquiry.email }}">{{ inquiry.email }}</a></td>
+                        <td>{{ inquiry.city }}</td>
+                        <td><span class="badge badge-budget">{{ inquiry.budget }}</span></td>
+                        <td class="msg-cell">
+                            {% if inquiry.message %}
+                            <span class="msg-preview" title="{{ inquiry.message }}">{{ inquiry.message[:50] }}{% if inquiry.message|length > 50 %}...{% endif %}</span>
+                            {% else %}
+                            <span class="text-muted">—</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <span class="status-badge status-{{ inquiry.status }}">
+                                {{ inquiry.status }}
+                            </span>
+                        </td>
+                        <td>{{ inquiry.created_at.strftime('%d %b %Y, %I:%M %p') }}</td>
+                        <td>
+                            <div class="action-btns">
+                                <form method="POST" action="{{ url_for('update_inquiry_status', id=inquiry.id) }}" style="display:inline">
+                                    <select name="status" onchange="this.form.submit()" class="status-select">
+                                        <option value="new" {% if inquiry.status == 'new' %}selected{% endif %}>New</option>
+                                        <option value="contacted" {% if inquiry.status == 'contacted' %}selected{% endif %}>Contacted</option>
+                                        <option value="closed" {% if inquiry.status == 'closed' %}selected{% endif %}>Closed</option>
+                                    </select>
+                                </form>
+                                <a href="{{ url_for('delete_inquiry', id=inquiry.id) }}" 
+                                   class="btn btn-sm btn-danger"
+                                   onclick="return confirm('Delete this inquiry?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted">No inquiries received yet.</p>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
